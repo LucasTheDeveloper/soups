@@ -8,18 +8,20 @@ import os
 # Set the URL
 url = 'https://web.gaap.co.za/index_reports.php'
 
-# Initialize a headless browser (e.g., Chrome)
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
-driver = webdriver.Chrome(options=options)
+# Specify the path to msedgedriver.exe
+edge_driver_path = r'C:\Users\DELL\Downloads\edgedriver_win64\msedgedriver.exe'
+
+# Create a Microsoft Edge WebDriver service with the executable path
+edge_service = webdriver.EdgeService(executable_path=edge_driver_path)
+
+# Initialize a Microsoft Edge browser
+driver = webdriver.Edge(service=edge_service)
 
 # Send a GET request
 driver.get(url)
-
-# Find and interact with the elements
 try:
     # Select the "Management Overview Report" option
-    report_type_select = WebDriverWait(driver, 10).until(
+    report_type_select = WebDriverWait(driver, 3000).until(
         EC.presence_of_element_located((By.ID, 'report_type'))
     )
     management_option = report_type_select.find_element(By.XPATH, "//option[text()='Management Overview Report']")
@@ -40,7 +42,7 @@ try:
     generate_button.click()
 
     # Wait for the report to generate (you might need to adjust the wait time)
-    WebDriverWait(driver, 30).until(
+    WebDriverWait(driver, 3000).until(
         EC.presence_of_element_located((By.XPATH, '//div[@id="report-container"]'))
     )
 
@@ -57,6 +59,6 @@ except Exception as e:
     print(f"An error occurred: {str(e)}")
 
 finally:
-    # Close the browser
+     #Close the browser
     driver.quit()
 
