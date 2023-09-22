@@ -35,19 +35,34 @@ try:
     # Set the end date
     end_date_input = driver.find_element(By.ID, 'enddate')
     end_date_input.clear()
-    end_date_input.send_keys("2023-09-21")
+    end_date_input.send_keys("2023-09-22")
 
     # Click the "Generate Report" button
     generate_button = driver.find_element(By.ID, 'btnGenerate')
     generate_button.click()
 
     # Wait for the report to generate (you might need to adjust the wait time)
-    WebDriverWait(driver, 3000).until(
+    WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//div[@id="report-container"]'))
     )
-
+    # Now, interact with the element
+    element.click()  # Or perform other interactions
     # Get the report content
     report_content = driver.page_source
+
+
+    # Before interacting with an element
+    print("Waiting for the element to appear...")
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, '//div[@id="report-container"]'))
+    )
+    print("Element found. Proceeding with the next step.")
+
+    # After an action (e.g., clicking a button)
+    print("Clicking the 'Generate Report' button...")
+    generate_button = driver.find_element(By.ID, 'btnGenerate')
+    generate_button.click()
+    print("'Generate Report' button clicked.")
 
     # Save the content to a file
     with open(os.path.join('C:\\Users\\DELL\\soup', 'report.html'), 'w', encoding='utf-8') as file:
