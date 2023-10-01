@@ -20,8 +20,10 @@ url = 'https://web.gaap.co.za/index_reports.php'
 driver.get(url)
 
 try:
-    # Find the report type dropdown element by its ID
-    report_type_dropdown = driver.find_element_by_id('report_type')
+    # Wait for the report type dropdown element to become available
+    report_type_dropdown = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, 'report_type'))
+    )
 
     # Create a Select object to work with the dropdown
     select = Select(report_type_dropdown)
@@ -30,7 +32,9 @@ try:
     select.select_by_visible_text('Turnover Daily Report')
 
     # Locate and click the "Done" button
-    done_button = driver.find_element(By.ID, 'report_type_done')
+    done_button = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, 'report_type_done'))
+    )
     done_button.click()
 
     # Optionally, you can add a delay to keep the browser open for some time
@@ -39,5 +43,4 @@ try:
 
 except Exception as e:
     print(f"An error occurred: {str(e)}")
-
 

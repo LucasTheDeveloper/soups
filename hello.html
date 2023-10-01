@@ -1,0 +1,1241 @@
+<DOCTYPE HTML>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>GAAP </title>
+<!-- Prefetching Resources -->
+<link rel="dns-prefetch" href="//code.jquery.com">
+<link rel="dns-prefetch" href="https://ajax.googleapis.com">
+<link rel="prefetch" href="/Images/gaap-logo.png">
+<link rel="prefetch" href="/images/backg.jpg">
+<link rel="prefetch" href="http://static.filepi.com">
+<!-- End Prefetching -->
+<!-- Start Base Css -->
+<link rel="stylesheet" type="text/css" href="resource/stylesheets/ie10-viewport.css">
+<link rel="stylesheet" href="resource/stylesheets/base.css">
+<!-- End Base Css -->
+<!--[if !IE]>-->
+<link rel="stylesheet" href="resource/stylesheets/non-ie.css">
+<!--<![endif]-->
+<!-- Prerequisites: jQuery and jQuery UI Stylesheet -->
+<link rel="stylesheet" href="resource/javascript/timepicker/jquery.timepicker.css">
+<link rel="stylesheet" href="resource/javascript/timepicker/jquery.timepicker.css">
+<link rel="stylesheet" href="resource/javascript/timepicker/lib/bootstrap-datepicker.css">
+<!-- For Dialog Box -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/jquery.multiselect.css?v=2.0">
+<link rel="stylesheet" href="/jquery.multiselect.filter.css?v=2.0">
+<link rel="stylesheet" href="/jquery-ui-1.9.1.custom.min.css?v=2.0">
+<style>
+body {-webkit-touch-callout: none; }
+</style>
+<!-- reportFilterHeader / reportFilterItem -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- For Dialog Box -->
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<!-- End Dialog Box -->
+<!-- End King Pie Select Date -->
+<!--
+@innocent
+Commented out this piece of code because it was stopping the date selection jquery
+2014/10/03
+ -->
+<!--<script language="JavaScript" src="/jquery-1.8.2.min.js?v=2.0"></script>-->
+<script src="/jquery-ui-1.9.1.custom.min.js?v=2.0"></script>
+<script src="/jquery.multiselect.min.js?v=2.0"></script>
+<script src="/jquery.multiselect.filter.min.js?v=2.0"></script>
+<!-- European format dd-mm-yyyy -->
+<script src="calendar1.js?v=1"></script><!-- Date only with year scrolling -->
+<!-- American format mm/dd/yyyy -->
+<script src="calendar2.js?v=1"></script><!-- Date only with year scrolling -->
+<!-- mySQL format yyyy-mm-dd -->
+<script src="calendar3.js?v=1"></script><!-- Date only with year scrolling -->
+<!-- Download Loading box -->
+<script src="jquery.fileDownload.js?v=1"></script>
+<script src="resource/javascript/index_report.js" async=""></script>
+<script src="resource/javascript/index_report.js.php" async=""></script>
+
+<script>
+	/*
+	 * Create hidden input with the report name so that we don't hard code the page name
+	 * @innocent - awesomeness
+	 * 2016/02/19
+	 */
+
+	 $(document).ready(function(){
+		$("#btnGenerate").on("click", function() {
+			var reportname = $("#report_type option:selected").text();
+			console.log(reportname);
+			var input = document.createElement("input");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("name", "pageName");
+			input.setAttribute("value", reportname);
+
+			//append to form element that you want .
+			document.getElementById("frm").appendChild(input);
+		});
+	});
+
+
+
+//Yesterday
+function Pre_populate(param) {
+
+//console.log(param);
+	var month, today, first = 0;
+	if (param === 'Yesterday') {
+		$('#Yesterday').addClass("radio_active");
+		$('#ThisWeek').removeClass("radio_active");
+		$('#ThisMonth').removeClass("radio_active");
+		$('#LastMonth').removeClass("radio_active");
+
+
+		var $today = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+		if ($today.getDate() < 10) {
+			today = '0' + $today.getDate();
+		} else {
+			today = $today.getDate();
+		}
+
+		if (($today.getMonth() + 1) < 10) {
+			month = '0' + ($today.getMonth() + 1);
+		} else {
+			month = ($today.getMonth() + 1);
+		}
+		$('#startdate').val("" + $today.getFullYear() + "-" + month + "-" + today);
+		$('#enddate').val("" + $today.getFullYear() + "-" + month + "-" + today);
+//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+	if (param === 'ThisWeek') {
+		$('#Yesterday').removeClass("radio_active");
+		$('#ThisWeek').addClass("radio_active");
+		$('#ThisMonth').removeClass("radio_active");
+		$('#LastMonth').removeClass("radio_active");
+		var $today = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+		if ($today.getDate() < 10) {
+			first = '0' + ($today.getDate() - 6);
+			today = '0' + ($today.getDate());// + 1);
+		} else {
+			first = ($today.getDate() - 6);
+			today = $today.getDate();// + 1;
+		}
+
+		if (($today.getMonth() + 1) < 10) {
+			month = '0' + ($today.getMonth() + 1);
+		} else {
+			month = ($today.getMonth() + 1);
+		}
+		$('#startdate').val("" + $today.getFullYear() + "-" + month + "-" + first);
+		$('#enddate').val("" + $today.getFullYear() + "-" + month + "-" + today);
+//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+	if (param === 'ThisMonth') {
+		$('#Yesterday').removeClass("radio_active");
+		$('#ThisWeek').removeClass("radio_active");
+		$('#ThisMonth').addClass("radio_active");
+		$('#LastMonth').removeClass("radio_active");
+		var $today = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+		if ($today.getDate() < 10) {
+			today = '0' + $today.getDate();
+		} else {
+			today = $today.getDate();
+		}
+
+		if (($today.getMonth() + 1) < 10) {
+			month = '0' + ($today.getMonth() + 1);
+		} else {
+			month = ($today.getMonth() + 1);
+		}
+		$('#startdate').val("" + $today.getFullYear() + "-" + month + "-" + "01");
+		$('#enddate').val("" + $today.getFullYear() + "-" + month + "-" + today);
+//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+	if (param === 'LastMonth') {
+		$('#Yesterday').removeClass("radio_active");
+		$('#ThisWeek').removeClass("radio_active");
+		$('#ThisMonth').removeClass("radio_active");
+		$('#LastMonth').addClass("radio_active");
+		var now = new Date();
+		var prevMonthLastDate = new Date(now.getFullYear(), now.getMonth(), 0);
+		var prevMonthFirstDate = new Date(now.getFullYear() - (now.getMonth() > 0 ? 0 : 1), (now.getMonth() - 1 + 12) % 12, 1);
+
+		var formatDateComponent = function (dateComponent) {
+			return (dateComponent < 10 ? '0' : '') + dateComponent;
+		};
+
+		var formatDate = function (date) {
+			return formatDateComponent(date.getFullYear()) + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate());
+		};
+
+		//document.write(formatDate(prevMonthFirstDate) + ' - ' + formatDate(prevMonthLastDate));
+		$('#startdate').val("" + formatDate(prevMonthFirstDate));
+		$('#enddate').val("" + formatDate(prevMonthLastDate));
+//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+
+}
+
+//Yesterday
+function Pre_populate1(param) {
+
+//console.log(param);
+	var month, today, first = 0;
+
+		$('#Yesterday').removeClass("radio_active");
+		$('#ThisWeek').removeClass("radio_active");
+		$('#ThisMonth').removeClass("radio_active");
+		$('#LastMonth').removeClass("radio_active");
+
+	if (param === 'Yesterday') {
+		$('#Yesterday').addClass("radio_active");
+		$('#ThisWeek').addClass("radio_passive");
+		$('#ThisMonth').addClass("radio_passive");
+		$('#LastMonth').addClass("radio_passive");
+		var d = new Date();
+		var n = d.setDate(d.getDate()-1);
+		var m = d.setDate(d.getMonth()+1);
+		var y = d.setDate(d.getFullYear());
+
+		if (n < 10) {
+			today = '0' + n;
+		} else {
+			today = n;
+		}
+
+		if (m < 10) {
+			month = '0'+ m;
+		} else {
+			month = m;
+		}
+		var date = ((new Date(n).toISOString().split('T')[0]));
+		$('#startdate').val(date);
+		$('#enddate').val(date);
+		/*$('#startdate').val("" + y + "-" + m + "-" + n);
+		$('#enddate').val("" + y + "-" + m + "-" + n);*/
+	}
+	else if (param === 'ThisWeek') {
+		$('#ThisWeek').addClass("radio_active");
+		$('#ThisMonth').addClass("radio_passive");
+		$('#Yesterday').addClass("radio_passive");
+		$('#LastMonth').addClass("radio_passive");
+
+		var d = new Date();
+		var t = d.setDate(d.getDate()-1);
+		var f = d.setDate(d.getDate()-6);
+		if (n < 10) {
+			//today = '0' + n;
+
+			first =   (new Date(f).toISOString().split('T')[0]);
+			 today =  (new Date(t).toISOString().split('T')[0]);
+			//today =  (d.getDate() + 1);
+		} else {
+			//today = n;
+			first =   (new Date(f).toISOString().split('T')[0]);//d.setDate(d.getDate() - d.getDay());
+			today =  (new Date(t).toISOString().split('T')[0]);
+			//today = (d.getDate() );
+		}
+
+		if (m < 10) {
+			month = '0'+ m;
+		} else {
+			month = m;
+		}
+
+		//console.log(date)
+
+
+		$('#startdate').val(first);
+		$('#enddate').val(today);
+
+		/*
+		var $today = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+		if ($today.getDate() < 10) {
+			first = '0' + ($today.getDate() - $today.getDay());
+			today = '0' + ($today.getDate() + 1);
+		} else {
+			first = ($today.getDate() - $today.getDay());
+			today = $today.getDate() + 1;
+		}
+
+		if (($today.getMonth() + 1) < 10) {
+			month = '0' + ($today.getMonth() + 1);
+		} else {
+			month = ($today.getMonth() + 1);
+		}
+		$('#startdate').val("" + $today.getFullYear() + "-" + month + "-" + first);
+		$('#enddate').val("" + $today.getFullYear() + "-" + month + "-" + today);
+		*/
+	}
+	else if (param === 'ThisMonth') {
+
+		$('#ThisMonth').addClass("radio_active");
+		$('#Yesterday').addClass("radio_passive");
+		$('#ThisWeek').addClass("radio_passive");
+		$('#LastMonth').addClass("radio_passive");
+
+
+		var date = new Date();
+		var firstDay = 	new Date(date.getFullYear(), date.getMonth(), 2).toISOString().split('T')[0];
+		var lastDay =	(new Date().toISOString().split('T')[0]);
+
+		/*
+		console.log(firstDay)
+
+		var d = new Date();
+		var n = d.getDate()-1;
+		var m = d.getMonth()+1;
+		var y = d.getFullYear();
+
+		if (n < 10) {
+			//today = '0' + n;
+			first = '0' + (d.getDate() - d.getDay());
+			today = '0' + (d.getDate() + 1);
+		} else {
+			//today = n;
+			first = '' + (d.getDate() - d.getDay());
+			today = '' + (d.getDate() );
+		}
+
+		if (m < 10) {
+			month = '0'+ m;
+		} else {
+			month = m;
+		}
+		*/
+		$('#startdate').val(firstDay);
+		$('#enddate').val(lastDay);
+
+
+		/*
+		var $today = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+		if ($today.getDate() < 10) {
+			today = '0' + $today.getDate();
+		} else {
+			today = $today.getDate();
+		}
+
+		if (($today.getMonth() + 1) < 10) {
+			month = '0' + ($today.getMonth() + 1);
+		} else {
+			month = ($today.getMonth() + 1);
+		}
+		$('#startdate').val("" + $today.getFullYear() + "-" + month + "-" + "01");
+		$('#enddate').val("" + $today.getFullYear() + "-" + month + "-" + today);*/
+//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+	else if (param === 'LastMonth') {
+		$('#LastMonth').addClass("radio_active");
+		$('#Yesterday').addClass("radio_passive");
+		$('#ThisWeek').addClass("radio_passive");
+		$('#ThisMonth').addClass("radio_passive");
+
+		var date = new Date();
+		var firstDay = 	new Date(date.getFullYear(), date.getMonth()-1, 2).toISOString().split('T')[0];
+		var lastDay =	new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0];
+
+	/*	var now = new Date();
+		var prevMonthLastDate = new Date(now.getFullYear(), now.getMonth(), 0);
+		var prevMonthFirstDate = new Date(now.getFullYear() - (now.getMonth() > 0 ? 0 : 1), (now.getMonth() - 1 + 12) % 12, 1);
+
+		var formatDateComponent = function (dateComponent) {
+			return (dateComponent < 10 ? '0' : '') + dateComponent;
+		};
+
+		var formatDate = function (date) {
+			return formatDateComponent(date.getFullYear()) + '-' + formatDateComponent(date.getMonth() + 1) + '-' + formatDateComponent(date.getDate());
+		};
+*/
+		//document.write(formatDate(prevMonthFirstDate) + ' - ' + formatDate(prevMonthLastDate));
+		$('#startdate').val(firstDay);
+		$('#enddate').val(lastDay);
+		//console.log("" + $today.getFullYear() + "-" + ($today.getMonth()+1) + "-"+ $today.getDate());
+	}
+
+}
+</script>
+
+<style>
+.radio_active{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+    font-size: 15;
+    background-color: #336699 !important;;
+    background-image: none;
+    color: #ffffff;
+    width: 12em;
+	height: 2em;
+}
+.radio_passive{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+    font-size: 15;
+	background-color: #46afe4;
+	border-radius:10px;
+    background-image: none;
+    color: #ffffff;
+    width: 12em;
+	height: 2em;
+}
+#Category_done{
+	padding-top: 10px !important;
+}
+
+#show_minimal{
+	display:none
+}
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" class="backg" style="">
+<noscript>
+  <div>
+    <p>Unfortunately your browser does not have JavaScript capabilities which are required to exploit full functionality of our site. This could be the result of two possible scenarios:</p>
+    <ol>
+      <li>You are using an old web browser, in which case you should upgrade it to a newer version. We recommend the latest version of <a href="http://www.getfirefox.com">Firefox</a>.</li>
+      <li>You have disabled JavaScript in your browser, in which case you will have to enable it to properly use our site. <a href="http://www.google.com/support/bin/answer.py?answer=23852">Learn how to enable JavaScript</a>.</li>
+    </ol>
+  </div>
+</noscript>
+<div id="dialog" style="display:none" title="Error Message">
+  <p>Please select the stores you want to include!</p>
+</div>
+<div id="date-dialog" style="display:none" title="Error Message">
+  <p>The start date cannot be after the end date!</p>
+</div>
+<div id="current-dialog" style="display:none" title="Error Message">
+  <p>The start date cannot be after the current date!</p>
+</div>
+<div id="enddate-dialog" style="display:none" title="Error Message">
+  <p>The end date cannot be after the current date!</p>
+</div>
+<!-- :( -->
+<iframe style="display: none;" id="fileLoadFrame"></iframe>
+<!-- ImageReady Slices (page_templates.psd) -->
+<center>
+
+  <form action="index_reports.php" method="post" id="frm" class="fileDownloadForm" name="drop_list" target="_self">
+  <table width="775" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" id="Table_01">
+  <!--DWLayoutTable-->
+  <tbody><tr>
+    <td height="82" colspan="4" align="center">
+      <img width="150" src="Images/gaap-logo.png" border="0" style="border-radius: 5px">
+            </td>
+    <!--<td width="230" valign="top">
+      <div align="right">
+        <!-- Logged In As:  -->
+        <!--<p style="font-family: Verdana; font-size: 10px;"><br><a href="index_reports.php?action=logout"><img src="images/log_out.jpg" width="100" height="25" border="0"></a></p>-->
+        <!--<p style="font-family: Verdana; font-size: 10px;"><br><a href="index_reports.php?action=logout" class="roll-link"><span data-title="Logout" class="link"><img src="images/log_out.jpg" width="100" height="25" border="0"></span></a></p>
+      </div>
+    </td>-->
+  </tr>
+  <tr>
+    <td colspan="1">
+      <div class="ribbon">
+		        <h3 style="color: rgb(204, 204, 204);">Welcome Back PizaLiana1</h3>
+      </div>
+    </td>
+	<td width="110" valign="top" align="right">
+      <div align="right" style="position:absolute;float:right; margin-bottom: 5px; top: 87px">
+        <!-- Logged In As:  -->
+        <!--<p style="font-family: Verdana; font-size: 10px;"><br><a href="index_reports.php?action=logout"><img src="images/log_out.jpg" width="100" height="25" border="0"></a></p>-->
+        <p style="font-family: Verdana; font-size: 10px;"><br><a href="index_reports.php?action=logout" class="roll-link"><span data-title="Logout" class="link"><img src="images/log_out.jpg" width="100" height="25" border="0"></span></a></p>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" valign="top" bgcolor="#FFFFFF">
+      <table width="100%" border="0" cellspacing="2" cellpadding="2">
+        <!--DWLayoutTable-->
+      <tbody><tr>
+        <td width="5" valign="top"></td>
+        <td class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons labelheader" colspan="2" valign="bottom" align="left" style="font-weight: bold;">
+        Select Report<br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td><td colspan="2" align="left">
+        <select name="report_type[]" id="report_type" class="report_type" onchange="document.getElementById('reportSubmitButton').click();return false;" style="display: none;">
+                      <!-- Restriction Reset -->
+                              <option value="79">Branch Status Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Cash Up - Boost Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Cash Up - Cattle Baron Report -->
+                              <!-- Restriction Reset -->
+                              <option value="5">Cash Up - Final Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="23">Cash Up - Paytype Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Combined Daily Export -->
+                              <!-- Restriction Reset -->
+                              <option value="18">Data - Upload Acknowledgements</option>
+                              <!-- Restriction Reset -->
+                              <option value="34">Data - User Access Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="80">Dayend List Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="84">Debtors - Invoices Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="58">Exception - Banking</option>
+                              <!-- Restriction Reset -->
+                              <option value="11">Exception - Discounts</option>
+                              <!-- Restriction Reset -->
+                              <option value="13">Exception - Negative Invoices</option>
+                              <!-- Restriction Reset -->
+                              <option value="36">Exception - Payouts</option>
+                              <!-- Restriction Reset -->
+                              <option value="12">Exception - Voids</option>
+                              <!-- Restriction Reset -->
+                              <option value="72">Gross Profit Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Invoice Audit Summary -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Kauai - Weekly Ops Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: King Pie - Management Summary -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: King Pie - Sales Export -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: King Pie - Stock Usage Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: King Pie - Turnover Contribution -->
+                              <!-- Restriction Reset -->
+                              <option value="113">Staff - Security Level</option>
+                              <!-- Restriction Reset -->
+                              <option value="91" selected="">Management Overview Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="16">Menu - Cost Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="38">Menu -  Listing Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="39">Menu -  Open Ranges Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="86">Pastel - Evolution Export Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="41">Pastel - Export Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="92">Pastel - Vat Box Export</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: TESTING - Pastel - Vat Box Export - Fego -->
+                              <!-- Restriction Reset -->
+                              <option value="56">Paytype - Export Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="57">Purchases - Branch Transfers Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="8">Purchases - Departmental Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="94">Purchases - Export</option>
+                              <!-- Restriction Reset -->
+                              <option value="55">Purchases - GRV Audit Trail Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="62">Purchases - Purchases by Supplier</option>
+                              <!-- Restriction Reset -->
+                              <option value="9">Purchases - Supplier Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="44">Recipes - Menu Items</option>
+                              <!-- Restriction Reset -->
+                              <option value="27">Recipes - Menu Items Without Recipes</option>
+                              <!-- Restriction Reset -->
+                              <option value="61">Recipes - Stock Items</option>
+                              <!-- Restriction Reset -->
+                              <option value="48">Sales - Audit Trail Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Boost Group Sales Report -->
+                              <!-- Restriction Reset -->
+                              <option value="7">Sales - Departmental Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="74">Sales - Departmental Report Grouped</option>
+                              <!-- Restriction Reset -->
+                              <option value="95">Sales - Export</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Sales Mix -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - King Pie Turnover Audit Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Kauai Sales Export -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - King Pie Sales Analysis -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - King Pie Sales Analysis Per Item -->
+                              <!-- Restriction Reset -->
+                              <option value="47">Sales - Menu Item Per Branch Monthly Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="35">Sales - Menu Item Per Branch Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="96">Sales - Menu Item per Hour Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="37">Sales - Menu Item Per Paytype</option>
+                              <!-- Restriction Reset -->
+                              <option value="90">Sales - Theoretical COS</option>
+                              <!-- Restriction Reset -->
+                              <option value="26">Sales - Top &amp; Bottom Sellers</option>
+                              <!-- Restriction Reset -->
+                              <option value="73">Sales - Weekly Sales Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Vida Departmental Sales Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Vida Food Analysis Sales Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Staff - Boost Upsells Report -->
+                              <!-- Restriction Reset -->
+                              <option value="53">Staff - Individual User Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="24">Staff - Log Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="59">Staff - Log Report Export</option>
+                              <!-- Restriction Reset -->
+                              <option value="40">Stock - Average Usage Per Hour</option>
+                              <!-- Restriction Reset -->
+                              <option value="30">Stock - Cost Comparison</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: TESTING - Stock - Item Tracking -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Stock - King Pie Basket Items -->
+                              <!-- Restriction Reset -->
+                              <option value="28">Stock - Listing Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="78">Stock - Stock Analysis Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="75">Stock - Stock Movement Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="29">Stock - Usage Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="14">Stock - Value Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="10">Stock - Variance Report</option>
+                              <!-- Restriction Reset -->
+                              <!-- Restricted: TESTING - Stock - Variance By Day Report -->
+                              <!-- Restriction Reset -->
+                              <option value="83">Stock - Wastage Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Stock - King Pie Basket Items By Hour Range -->
+                              <!-- Restriction Reset -->
+                              <option value="32">Turnover - Averages Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="31">Turnover - Averages Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="43">Turnover - Daily Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="19">Turnover - Hourly Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Turnover - Kauai Report -->
+                              <!-- Restriction Reset -->
+                              <option value="20">Turnover - Per Branch</option>
+                              <!-- Restriction Reset -->
+                              <option value="22">Turnover - Per Branch Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="25">Turnover - Per Branch Monthly Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="21">Turnover - Per Branch Split Paytypes</option>
+                              <!-- Restriction Reset -->
+                              <option value="42">Turnover - Per Branch Year To Date Comp</option>
+                              <!-- Restriction Reset -->
+                              <option value="1">Turnover - Per Day</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Turnover - Per Day Boost Report -->
+                              <!-- Restriction Reset -->
+                              <option value="54">Turnover - Per Day Budget Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Vida - Cost Price Comparison Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Vida - Purchase Price Exception Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - King Pie Wholesale Discount -->
+                              <!-- Restriction Reset -->
+                              <option value="49">VIP Payroll - Interface Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="102">Sales - Period Comparison Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Yogurt Analysis -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Pastel - Purchase Export -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Pastel - Sales Export -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: TESTING - Sales Top/Bottom Sales - Capellos -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: report - Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: TESTING - Sales - Innscor Sales Export -->
+                              <!-- Restriction Reset -->
+                              <option value="111">Sage X3 Export</option>
+                              <!-- Restriction Reset -->
+                              <option value="112">Transfers - Departmental Transfers</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Hooters - Turnover Per Day -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Hooters - Food Cost Report -->
+                              <!-- Restriction Reset -->
+                              <option value="116">Exception - Error Correct</option>
+                              <!-- Restriction Reset -->
+                              <option value="117">Pastel Project Purchases</option>
+                              <!-- Restriction Reset -->
+                              <option value="119">Log Edit(Backend)</option>
+                              <!-- Restriction Reset -->
+                              <option value="120">QuickBooks - Export Report</option>
+                              <!-- Restriction Reset -->
+                              <!-- Restricted: TESTING - Pastel Project - Export Report -->
+                              <!-- Restriction Reset -->
+                              <option value="121">Sales - Sales Mode Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Sales - Turnover & Menu Matrix Report -->
+                              <!-- Restriction Reset -->
+                              <option value="124">Sales - Invoice Count Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="125">Sales - Bump Screen Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="126">Stock - Portioning Yields Export Report</option>
+                              <!-- Restriction Reset -->
+                              <!-- Restricted: TESTING Sales - Daily Sales by Date -->
+                              <!-- Restriction Reset -->
+                              <option value="129">Sales - Menu Item Per Branch Daily Comparison</option>
+                              <!-- Restriction Reset -->
+                              <option value="130">Stock - Stock Items (without Recipes)</option>
+                              <!-- Restriction Reset -->
+                              <option value="131">Stock - Manufacturing  Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="132">Stock - Portioning  Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="133">Debtors -  Daily Sales Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="134">Sales - Item Comparison Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="135">Menu - Pricing levels</option>
+                              <!-- Restriction Reset -->
+                              <option value="137">Staff - Gratuity Report</option>
+                              <!-- Restriction Reset -->
+                              <!-- Restricted: Data - Reports Log -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Barcelos - Monthly Royalty Report -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Simbisa - Turnover Per Day -->
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Delhi - Stock Analysis Report -->
+                              <!-- Restriction Reset -->
+                              <option value="142">Turnover - Analysis Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="145">Staff - Full Staff Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="146">Customer - Loyalty Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="148">Customer - Listing Report</option>
+                              <!-- Restriction Reset -->
+                              <option value="149">Sales - Departmental Sales Per Day Report</option>
+                              <!-- Restriction Reset -->
+              <!-- Restriction Set - Reason - 1 -->                <!-- Restricted: Hollywood  - Stock Analysis Report -->
+                              <!-- Restriction Reset -->
+                              <option value="152">Speed of Service</option>
+                              <!-- Restriction Reset -->
+                              <option value="153">Supplier - GRV per Supplier Export Report </option>
+                          </select><button type="button" class="ui-multiselect ui-widget ui-state-default ui-corner-all" aria-haspopup="true" style="width: 335.6px;"><span class="ui-icon ui-icon-triangle-2-n-s"></span><span>Management Overview Report</span></button>
+          <br>
+          <!-- The following button is to get the loading screen when you change reports -->
+          <input type="submit" id="reportSubmitButton" style="display: none;" value="This button is a submit spoof :p">
+          <br>
+          </td>
+              <td width="5"></td>
+        </tr>
+        <tr>
+          <td valign="center"></td>
+            <td rowspan="2" colspan="2" valign="top">
+              <input name="Submit" type="submit" id="Submit" class="sbutton addbutton ui-button ui-widget ui-state-default ui-corner-all" style="font-family: Verdana; background: none rgb(51, 102, 153); color: rgb(255, 255, 255); width: 3em; display: none;" value=">>" role="button" aria-disabled="false"><input name="Submit" type="submit" id="Submit" class="sbutton removebutton ui-button ui-widget ui-state-default ui-corner-all" style="font-family: Verdana; background: none rgb(51, 102, 153); color: rgb(255, 255, 255); width: 3em; display: none;" value="removeStore" role="button" aria-disabled="false"><table width="100%" border="0" cellspacing="2" cellpadding="2">
+              <!--DWLayoutTable-->
+                <tbody><tr>
+                  <td class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons labelheader" width="206" colspan="2" valign="top" align="left">
+                    Select Stores or Regions
+                  </td>
+                </tr>
+                <tr>
+                    <td valign="top" align="left" width="360">
+                                              <input type="hidden" name="single_store" value="choosen">
+                                            <select name="Category[]" size="15" multiple="multiple" class="branchlist" id="Category" style="font-size: 9px; font-family: Verdana, Arial, Helvetica, sans-serif; display: none;" ondblclick="additem(this.form);">
+                                                <optgroup value="Eastern Cape" style="background:#336699;font-weight:bold;font-size:11px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#ffffff" label="Eastern Cape">
+                                                     <option value="C0801R0003B0001">Hartenbos</option>
+                                         </optgroup>
+                        <optgroup value="Gauteng" style="background:#336699;font-weight:bold;font-size:11px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#ffffff" label="Gauteng">
+                                                     <option value="C0801R0001B0011">Centurion - Closed</option>
+                                                          <option value="C0801R0001B0007">Eagles Landing</option>
+                                                          <option value="C0801R0001B0004">Irene Village</option>
+                                                          <option value="C0801R0001B0001">Kyalami -Closed</option>
+                                                          <option value="C0801R0001B0006">Lynnridge Mall</option>
+                                                          <option value="C0801R0001B0008">Melrose Arch</option>
+                                                          <option value="C0801R0001B0005">Melville @ Bibloteek</option>
+                                                          <option value="C0801R0001B0009">Paulshof - Closed</option>
+                                                          <option value="C0801R0001B0012">Piza E Vino Cambridge Crossing (Ex Paulshof)</option>
+                                                          <option value="C0801R0001B0010">Queenswood</option>
+                                                          <option value="C0801R0001B0002">Rosebank - Closed</option>
+                                                          <option value="C0801R0001B0003">Waterkloof Corner</option>
+                                         </optgroup>
+                        <optgroup value="Head Office" style="background:#336699;font-weight:bold;font-size:11px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#ffffff" label="Head Office">
+                                                     <option value="C0801R0999B0001">Test Branch</option>
+                                         </optgroup>
+                        <optgroup value="Western Cape" style="background:#336699;font-weight:bold;font-size:11px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#ffffff" label="Western Cape">
+                                                     <option value="C0801R0002B0001">Stellenbosch Square</option>
+                                         </optgroup>
+
+                    </select><button type="button" class="ui-multiselect ui-widget ui-state-default ui-corner-all" aria-haspopup="true" style="width: 335.6px;"><span class="ui-icon ui-icon-triangle-2-n-s"></span><span>All Stores</span></button>
+
+          <br>
+		  <span class="required" style="display:none; color: orange;">Required Field</span>
+		  <br></td>
+                    <!--<td valign="top" width="0">-->
+
+
+                          <!--<input name="Submit" type="submit" id="Submit" class="sbutton removebutton" STYLE="font-family:Verdana; font-size:11; background:#336699 none; color:#ffffff; width:3em;" value="<<">-->
+
+
+                       <!-- <p align="center">
+                          <input name="Submit" type="submit" id="Submit" STYLE="font-family:Verdana; font-size:12; background:#336699 none; color:#ffffff; width:8em" value="Add All >>>">
+                        </p>
+                        <p align="center">
+                          <input name="Submit" type="submit" id="Submit" STYLE="font-family:Verdana; font-size:12; background:#336699 none; color:#ffffff; width:8em" value="<<< Rem All">
+                        </p>   -->
+                    <td valign="top" align="left">
+                      <div align="left">
+                          <select name="stores[]" size="15" class="selectedlist" multiple="multiple" id="stores" style="font-size: 9px; font-family: Verdana, Arial, Helvetica, sans-serif; display: none;">
+                                                                <option value="C0801R0003B0001" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Hartenbos</option>
+                                                                  <option value="C0801R0001B0011" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Centurion - Closed</option>
+                                                                  <option value="C0801R0001B0007" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Eagles Landing</option>
+                                                                  <option value="C0801R0001B0004" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Irene Village</option>
+                                                                  <option value="C0801R0001B0001" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Kyalami -Closed</option>
+                                                                  <option value="C0801R0001B0006" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Lynnridge Mall</option>
+                                                                  <option value="C0801R0001B0008" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Melrose Arch</option>
+                                                                  <option value="C0801R0001B0005" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Melville @ Bibloteek</option>
+                                                                  <option value="C0801R0001B0009" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Paulshof - Closed</option>
+                                                                  <option value="C0801R0001B0012" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Piza E Vino Cambridge Crossing (Ex Paulshof)</option>
+                                                                  <option value="C0801R0001B0010" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Queenswood</option>
+                                                                  <option value="C0801R0001B0002" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Rosebank - Closed</option>
+                                                                  <option value="C0801R0001B0003" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Waterkloof Corner</option>
+                                                                  <option value="C0801R0999B0001" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Test Branch</option>
+                                                                  <option value="C0801R0002B0001" style="background:#ffffff;font-weight:regular;font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;color:#000000">Stellenbosch Square</option>
+                                                                                      </select><button type="button" class="ui-multiselect ui-widget ui-state-default ui-corner-all" aria-haspopup="true" style="width: 335.6px;"><span class="ui-icon ui-icon-triangle-2-n-s"></span><span>Selected Stores</span></button>
+
+                      </div></td>
+
+                  </tr>
+          <!--//Added  By Claudius 21.05.2012
+          <tr><td>
+          <input name="Submit" type="submit" id="Submit" STYLE="font-family:Verdana; font-size:12; background:#336699 none; color:#ffffff; width:200" value="Show All Stores">
+          </td><td></td><td></td></tr>
+          <!--//Added  By Clauding 21.05.2012!-->
+
+              </tbody></table></td>
+              <td></td>
+            </tr>
+
+
+<tr><td><br></td></tr>
+        <tr>
+          <td valign="bottom"></td>
+            <!-- Only do for Reports that are not 27 & 39 -->
+            <td colspan="2" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons labelheader" valign="bottom" align="left" width="339px" style="font-weight: bold;">
+          Select date ranges for the Report
+        </td>
+                    </tr>
+        <tr>
+<td>
+
+            <!-- Only do for Reports that are not 27 & 39 -->
+              </td><td colspan="1" valign="bottom" align="left">
+                      <span class="reportFilterHeader">Start Date:</span>
+            <br>
+                    </td>
+          <td colspan="1" width="360" height="4" valign="bottom" align="left">
+            <span class="reportFilterHeader">Select Month :</span>
+            <br>
+          </td>
+                              </tr><tr>
+            <!-- Only do for Reports that are not 27 & 39 -->
+<!--            <input name="startdate" type="text" id="startdate" style="font-size:9px;font-family:Verdana, Arial, Helvetica, sans-serif;width:150" value="--01" readonly="true"> -->
+                <td></td>
+          <td align="left">
+                        <input name="startdate" class="datefield ui-widget ui-state-default ui-corner-all hasDatepicker" type="text" id="startdate" value="2023-09-01" placeholder="Select the date" role="button" aria-disabled="false" readonly="readonly"><img class="ui-datepicker-trigger" src="/images/Calender-32.png" alt="..." title="...">
+          </td>
+
+
+
+            <!-- Only do for Reports that are not 27 & 39 -->
+                <!--<a href="javascript:cal1.popup();"><img src="img/cal.gif" width="16" height="16" border="0" alt="Click Here to Pick up the date" /></a> -->
+                       <!-- Only do for Reports that are not 27 & 39 -->
+
+        <td align="left">
+          <select name="month_select" id="month_selects" class="datelist" align="left" style="font-size: 9px; font-family: Verdana, Arial, Helvetica, sans-serif; display: none;" readonly="true" onchange="reload(this.form)">
+			              <option value="01">January</option>
+			  <!--<option value="01">January</option>-->
+                          <option value="02">February</option>
+			  <!--<option value="02">February</option>-->
+                          <option value="03">March</option>
+			  <!--<option value="03">March</option>-->
+                          <option value="04">April</option>
+			  <!--<option value="04">April</option>-->
+                          <option value="05">May</option>
+			  <!--<option value="05">May</option>-->
+                          <option value="06">June</option>
+			  <!--<option value="06">June</option>-->
+                          <option value="07">July</option>
+			  <!--<option value="07">July</option>-->
+                          <option value="08">August</option>
+			  <!--<option value="08">August</option>-->
+                          <option value="09" selected="">September</option>
+			  <!--<option value="09" selected>September</option>-->
+                          <option value="10" disabled="disabled">October</option>
+			  <!--<option value="10">October</option>-->
+                          <option value="11" disabled="disabled">November</option>
+			  <!--<option value="11">November</option>-->
+                          <option value="12" disabled="disabled">December</option>
+			  <!--<option value="12">December</option>-->
+                        </select><button type="button" class="ui-multiselect ui-widget ui-state-default ui-corner-all" aria-haspopup="true" style="width: 125.6px;"><span class="ui-icon ui-icon-triangle-2-n-s"></span><span>September</span></button>
+              <!-- Only do for Report 18 -->
+                  <select name="year_select" id="year_select" align="left" class="datelist" style="font-size: 9px; font-family: Verdana, Arial, Helvetica, sans-serif; display: none;" readonly="true" onchange="reload(this.form)" onclick="enable()">
+        				<option value="2003">2003</option>
+
+								<option value="2004">2004</option>
+
+								<option value="2005">2005</option>
+
+								<option value="2006">2006</option>
+
+								<option value="2007">2007</option>
+
+								<option value="2008">2008</option>
+
+								<option value="2009">2009</option>
+
+								<option value="2010">2010</option>
+
+								<option value="2011">2011</option>
+
+								<option value="2012">2012</option>
+
+								<option value="2013">2013</option>
+
+								<option value="2014">2014</option>
+
+								<option value="2015">2015</option>
+
+								<option value="2016">2016</option>
+
+								<option value="2017">2017</option>
+
+								<option value="2018">2018</option>
+
+								<option value="2019">2019</option>
+
+								<option value="2020">2020</option>
+
+								<option value="2021">2021</option>
+
+								<option value="2022">2022</option>
+
+								<option value="2023" selected="">2023</option>
+
+
+		  </select><button type="button" class="ui-multiselect ui-widget ui-state-default ui-corner-all" aria-haspopup="true" style="width: 125.6px;"><span class="ui-icon ui-icon-triangle-2-n-s"></span><span>2023</span></button>
+		      </td>
+         </tr>
+                <tr>
+       <td valign="top" align="left"></td>
+          <!-- Only do for Report 18 -->
+            <td width="299" valign="top" align="left">
+          <span class="reportFilterHeader">End Date:</span>
+           </td>
+         <td>
+                                <!-- Only do for Report 18 -->
+        </td></tr><tr>
+          <td></td>
+          <td align="left">
+            <input name="enddate" type="text" id="enddate" class="datefield ui-widget ui-state-default ui-corner-all hasDatepicker" align="left" value="2023-09-23" placeholder="Select the date" role="button" aria-disabled="false" readonly="readonly"><img class="ui-datepicker-trigger" src="/images/Calender-32.png" alt="..." title="...">
+        </td>
+
+       <!-- Only do for Report 18 -->
+        <!--<a href="javascript:cal2.popup();"><img src="img/cal.gif" width="16" height="16" border="0" alt="Click Here to Pick up the date"></a> -->
+                     <!--<td valign="top">-->
+            <!-- King Pie - Date Selection  -->
+                      <!-- End -->
+         </tr>
+
+		 <tr>
+			<td></td>
+			<td>
+				<span class="reportFilterHeader">Quick Date Selection</span>
+			</td>
+		 </tr>
+
+		 <tr>
+			<td></td>
+			<td colspan="6">
+					<div class="btn-group">
+						<button id="Yesterday" type="button" onclick="Pre_populate('Yesterday')" class="btn btn-primary radio_passive" data-toggle="tab">Yesterday</button>
+						<button id="ThisWeek" type="button" onclick="Pre_populate('ThisWeek')" class="btn btn-primary radio_passive" data-toggle="tab">Last 7 days</button>
+						<button id="ThisMonth" type="button" onclick="Pre_populate('ThisMonth')" class="btn btn-primary radio_passive" data-toggle="tab">This month</button>
+						<button id="LastMonth" type="button" onclick="Pre_populate('LastMonth')" class="btn btn-primary radio_passive" data-toggle="tab">Last month</button>
+					</div>
+			</td>
+		 </tr>
+
+
+           <!-- Dep Report Insert Here -->
+
+            <!-- if reporttype != 14 -->
+
+
+
+		<!-- Hooters Food Cost -->
+
+				        <!-- King Pie Select Time -->
+
+
+
+
+
+
+
+          <!-- All above reports have detailed and summary option -->
+
+
+		<!--TEST%-->
+
+        		<!--TEST%-->
+
+
+
+
+
+
+
+
+                <tr><td><br></td></tr>
+        <tr>
+        <td>
+              </td><td class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons labelheader" height="5" colspan="2" valign="top" align="left">
+          <b>Report Filters</b>
+        </td>
+        </tr>
+          <tr>
+            <td>
+            <!--<td valign="top" align="left">
+              <p>
+              <input name="inclexceptdet" type="checkbox" value="1">
+              <span class="reportFilterItem">Include Exception Details</span>
+              </p>
+            </td>
+            <td/>
+			<p>
+              <input name="detailedexpenses91" type="checkbox" value="1">
+              <span class="reportFilterItem">Detailed expenses</span>
+              </p>
+			<td/>-->
+			</td><td valign="top" colspan="2">
+				<div style="display: grid;grid-template-columns: 1fr 1fr 1fr;">
+				<p>
+					<input name="showPaytypes" type="checkbox" value="1">
+					<span class="reportFilterItem">Detailed Paytypes</span>
+				</p>
+
+				<p>
+					<input name="inclexceptdet" type="checkbox" value="1">
+					<span class="reportFilterItem">Include Exception Details</span>
+				</p>
+
+				<p>
+					<input name="detailedexpenses91" type="checkbox" value="1">
+					<span class="reportFilterItem">Detailed expenses</span>
+				</p>
+				</div>
+            </td>
+          </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <tr>
+      <td></td>
+      <td colspan="2">
+      <table width="100%">
+        <tbody><tr><td><br></td></tr>
+        <tr>
+          <td class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons labelheader" colspan="3" valign="top" align="left" style="font-weight: bold;">
+            Select report output
+          </td>
+        </tr>
+        <!-- Weird formatting - Don't add a </table> until the code is cleaned up -->
+
+
+      <tr>
+      <!-- Messy weird filter code below - Needs to be cleaned up... -->
+            <!--<td rowspan="1" valign="bottom" width=40 align="left"></td>-->
+                    <td height="30" align="left">
+            <label>
+              <div class="report-output">
+                <img src="images/pdf.jpg" width="30" height="30">
+                <input name="theoutput" type="radio" value="pdf" checked="">
+                <span class="reportFilterItem">Download as PDF</span>
+              </div>
+            </label>
+          </td>
+
+                </tr>
+      <tr>
+      <td colspan="3" class="reportFilterHeader" style="text-align: center;">
+              </td>
+    </tr>
+  <tr>
+    <td colspan="6"><div class="result"></div></td>
+  </tr>
+
+
+        <tr>
+          <td height="10" colspan="4" valign="top" width="100%">
+      <center>
+                <br>
+                        <input name="Submit" type="submit" id="btnGenerate" value="Generate Report" class="sbutton ui-button ui-widget ui-state-default ui-corner-all" style="font-family:BebasNeue,Verdana; font-weight:normal; letter-spacing:1.1px; font-size:15; background-color: #336699; background-image: none; color:#ffffff; width:12em" role="button" aria-disabled="false">
+        <!-- onclick="void(document.getElementById('btnGenerate').style.background='Grey');" -->
+              </center>
+        </td>
+              <!--<td></td>-->
+            </tr>
+        </tbody></table></td>
+      </tr>
+
+             <!--<tr>
+      <td></td>
+      <td colspan="2" class="reportFilterHeader" style="text-align: center;">
+      Test Your Connection Speed @ <a href="http://www.speedtest.net">www.speedtest.net</a>
+    </td>
+  </tr>-->
+  </tbody></table>
+  </td></tr><tr>
+    <td height="19" colspan="2" valign="top">
+    <img src="images/page_templates_03.gif" width="775" height="19" alt=""></td>
+  </tr>
+
+</tbody></table>
+</form>
+
+<script language="JavaScript">
+      <!-- // create calendar object(s) just after form tag closed
+         // specify form element as the only parameter (document.forms['formname'].elements['inputname']);
+         // note: you can have as many calendar objects as you need for your application
+
+        var cal1 = new calendar3(document.forms[0].elements['startdate']);
+        cal1.year_scroll = true;
+        cal1.time_comp = false;
+        var cal2 = new calendar3(document.forms[0].elements['enddate']);
+        cal2.year_scroll = false;
+        cal2.time_comp = false;
+
+      //-->
+      </script>
+
+</center>
+<!--
+   Load my first plugin
+   @innocent
+-->
+<script src="resource/javascript/plugin/background.js"></script>
+<script>
+	$( ".ribbon h3" ).welcome();
+
+  // Make sure the document is ready to be manipulated
+  $(document).ready(function() {
+    // Add a listener to year click event
+    $("#year_select").multiselect({
+      click: function(event, ui) {
+        // if the selected year is not current year, enable all months
+        var date = new Date();
+        var year = date.getFullYear();
+
+        if (ui.value != year) {
+          $("#month_selects option").attr("disabled", false);
+          $("#month_selects").multiselect("refresh");
+        }
+        // otherwise only show months up to the current months
+        if (ui.value == year) {
+          var month_no = date.getMonth()+1;
+          $("#month_selects option").attr("disabled", true);
+          for (i = 1; i <= month_no; i++) {
+            // if selected month value is less 10, append the option value with 0 according to the dropdown
+            if (i < 10)
+              $("#month_selects option[value='0" + i + "']").attr("disabled", false);
+            else
+              $("#month_selects option[value='" + i + "']").attr("disabled", false);
+          }
+          $("#month_selects").multiselect("refresh");
+        }
+      }
+    });
+  });
+</script>
+
+ <script>
+		function valid(id){
+			$amount = document.getElementById("amount").value;
+			if(!isNaN($amount)){
+			console.log('true')
+			}else{
+			$("#amount").focus();
+			}
+		}
+
+		function checkoption(val){
+			if(val=='07 - Detailed Supplier Transactions'){
+				$("#ishidden").hide();
+				 document.getElementById("Daily").checked = true;
+			}else{
+				$("#ishidden").show();
+				 document.getElementById("filter").checked = true;
+			}
+
+			if(val=='02 - Sales Export' || val=='03 - Purchases Export'){
+				document.getElementById("show_minimal").style.display= "block" ;
+				document.getElementById("show_minimal").checked = true;
+			}
+			else{
+				document.getElementById("show_minimal").style.display = "none";
+				document.getElementsByName('filter')[1].checked = true;
+			}
+		}
+
+			//replace stores
+			function replace_stores(){
+
+				$("#stores").find("option").each(function () {
+						$(this).prop("selected", "selected");
+				});
+
+				var mystores = [];
+					[].forEach.call(  document.querySelectorAll('#stores :checked')  , function(elm){
+						mystores.push(elm.value);
+					})
+					console.log(mystores)
+
+				var jqxhr = $.post( "/templates/replaceStores.php",{ "stores [] ": mystores }, function(result) {
+				  $( "#Category_done" ).trigger( "click" )
+
+				})
+
+
+			}
+	 </script>
+<!-- End ImageReady Slices -->
+
+
+<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all ui-multiselect-single" style="width: 120px;"><div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter" style="display: none;"><div class="ui-multiselect-filter">Filter:<input placeholder="Enter keywords" type="search"></div><ul class="ui-helper-reset"><li><a class="ui-multiselect-all" href="#" style="display: none;"><span class="ui-icon ui-icon-check"></span><span>Check all</span></a></li><li><a class="ui-multiselect-none" href="#" style="display: none;"><span class="ui-icon ui-icon-closethick"></span><span>Uncheck all</span></a></li><li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li></ul></div><ul class="ui-multiselect-checkboxes ui-helper-reset" style="height: 250px;"><li class=" "><label for="ui-multiselect-year_select-option-2003" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2003" name="multiselect_year_select" type="radio" value="2003" title="2003"><span>2003</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2004" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2004" name="multiselect_year_select" type="radio" value="2004" title="2004"><span>2004</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2005" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2005" name="multiselect_year_select" type="radio" value="2005" title="2005"><span>2005</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2006" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2006" name="multiselect_year_select" type="radio" value="2006" title="2006"><span>2006</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2007" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2007" name="multiselect_year_select" type="radio" value="2007" title="2007"><span>2007</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2008" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2008" name="multiselect_year_select" type="radio" value="2008" title="2008"><span>2008</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2009" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2009" name="multiselect_year_select" type="radio" value="2009" title="2009"><span>2009</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2010" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2010" name="multiselect_year_select" type="radio" value="2010" title="2010"><span>2010</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2011" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2011" name="multiselect_year_select" type="radio" value="2011" title="2011"><span>2011</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2012" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2012" name="multiselect_year_select" type="radio" value="2012" title="2012"><span>2012</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2013" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2013" name="multiselect_year_select" type="radio" value="2013" title="2013"><span>2013</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2014" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2014" name="multiselect_year_select" type="radio" value="2014" title="2014"><span>2014</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2015" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2015" name="multiselect_year_select" type="radio" value="2015" title="2015"><span>2015</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2016" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2016" name="multiselect_year_select" type="radio" value="2016" title="2016"><span>2016</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2017" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2017" name="multiselect_year_select" type="radio" value="2017" title="2017"><span>2017</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2018" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2018" name="multiselect_year_select" type="radio" value="2018" title="2018"><span>2018</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2019" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2019" name="multiselect_year_select" type="radio" value="2019" title="2019"><span>2019</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2020" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2020" name="multiselect_year_select" type="radio" value="2020" title="2020"><span>2020</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2021" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2021" name="multiselect_year_select" type="radio" value="2021" title="2021"><span>2021</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2022" title="" class="ui-corner-all"><input id="ui-multiselect-year_select-option-2022" name="multiselect_year_select" type="radio" value="2022" title="2022"><span>2022</span></label></li><li class=" "><label for="ui-multiselect-year_select-option-2023" title="" class="ui-corner-all ui-state-active"><input id="ui-multiselect-year_select-option-2023" name="multiselect_year_select" type="radio" value="2023" title="2023" checked="checked" aria-selected="true"><span>2023</span></label></li></ul><div id="year_select_done" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" style="float: right; font-size: 0.8em; height: 20px; margin-top: 3px;"><span class="ui-button-text">Done</span></div></div><div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all ui-multiselect-single" style="width: 330px;"><div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter"><div class="ui-multiselect-filter">Filter:<input placeholder="Enter keywords" type="search"></div><ul class="ui-helper-reset"><li>Select a Report</li><li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li></ul></div><ul class="ui-multiselect-checkboxes ui-helper-reset"><li class=" "><label for="ui-multiselect-report_type-option-79" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-79" name="multiselect_report_type" type="radio" value="79" title="Branch Status Report"><span>Branch Status Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-5" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-5" name="multiselect_report_type" type="radio" value="5" title="Cash Up - Final Report"><span>Cash Up - Final Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-23" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-23" name="multiselect_report_type" type="radio" value="23" title="Cash Up - Paytype Report"><span>Cash Up - Paytype Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-18" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-18" name="multiselect_report_type" type="radio" value="18" title="Data - Upload Acknowledgements"><span>Data - Upload Acknowledgements</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-34" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-34" name="multiselect_report_type" type="radio" value="34" title="Data - User Access Report"><span>Data - User Access Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-80" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-80" name="multiselect_report_type" type="radio" value="80" title="Dayend List Report"><span>Dayend List Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-84" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-84" name="multiselect_report_type" type="radio" value="84" title="Debtors - Invoices Report"><span>Debtors - Invoices Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-58" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-58" name="multiselect_report_type" type="radio" value="58" title="Exception - Banking"><span>Exception - Banking</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-11" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-11" name="multiselect_report_type" type="radio" value="11" title="Exception - Discounts"><span>Exception - Discounts</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-13" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-13" name="multiselect_report_type" type="radio" value="13" title="Exception - Negative Invoices"><span>Exception - Negative Invoices</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-36" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-36" name="multiselect_report_type" type="radio" value="36" title="Exception - Payouts"><span>Exception - Payouts</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-12" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-12" name="multiselect_report_type" type="radio" value="12" title="Exception - Voids"><span>Exception - Voids</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-72" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-72" name="multiselect_report_type" type="radio" value="72" title="Gross Profit Report"><span>Gross Profit Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-113" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-113" name="multiselect_report_type" type="radio" value="113" title="Staff - Security Level"><span>Staff - Security Level</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-91" title="" class="ui-corner-all ui-state-active"><input id="ui-multiselect-report_type-option-91" name="multiselect_report_type" type="radio" value="91" title="Management Overview Report" checked="checked" aria-selected="true"><span>Management Overview Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-16" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-16" name="multiselect_report_type" type="radio" value="16" title="Menu - Cost Comparison"><span>Menu - Cost Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-38" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-38" name="multiselect_report_type" type="radio" value="38" title="Menu -  Listing Report"><span>Menu -  Listing Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-39" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-39" name="multiselect_report_type" type="radio" value="39" title="Menu -  Open Ranges Report"><span>Menu -  Open Ranges Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-86" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-86" name="multiselect_report_type" type="radio" value="86" title="Pastel - Evolution Export Report"><span>Pastel - Evolution Export Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-41" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-41" name="multiselect_report_type" type="radio" value="41" title="Pastel - Export Report"><span>Pastel - Export Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-92" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-92" name="multiselect_report_type" type="radio" value="92" title="Pastel - Vat Box Export"><span>Pastel - Vat Box Export</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-56" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-56" name="multiselect_report_type" type="radio" value="56" title="Paytype - Export Report"><span>Paytype - Export Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-57" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-57" name="multiselect_report_type" type="radio" value="57" title="Purchases - Branch Transfers Report"><span>Purchases - Branch Transfers Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-8" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-8" name="multiselect_report_type" type="radio" value="8" title="Purchases - Departmental Report"><span>Purchases - Departmental Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-94" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-94" name="multiselect_report_type" type="radio" value="94" title="Purchases - Export"><span>Purchases - Export</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-55" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-55" name="multiselect_report_type" type="radio" value="55" title="Purchases - GRV Audit Trail Report"><span>Purchases - GRV Audit Trail Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-62" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-62" name="multiselect_report_type" type="radio" value="62" title="Purchases - Purchases by Supplier"><span>Purchases - Purchases by Supplier</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-9" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-9" name="multiselect_report_type" type="radio" value="9" title="Purchases - Supplier Report"><span>Purchases - Supplier Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-44" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-44" name="multiselect_report_type" type="radio" value="44" title="Recipes - Menu Items"><span>Recipes - Menu Items</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-27" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-27" name="multiselect_report_type" type="radio" value="27" title="Recipes - Menu Items Without Recipes"><span>Recipes - Menu Items Without Recipes</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-61" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-61" name="multiselect_report_type" type="radio" value="61" title="Recipes - Stock Items"><span>Recipes - Stock Items</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-48" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-48" name="multiselect_report_type" type="radio" value="48" title="Sales - Audit Trail Report"><span>Sales - Audit Trail Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-7" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-7" name="multiselect_report_type" type="radio" value="7" title="Sales - Departmental Report"><span>Sales - Departmental Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-74" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-74" name="multiselect_report_type" type="radio" value="74" title="Sales - Departmental Report Grouped"><span>Sales - Departmental Report Grouped</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-95" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-95" name="multiselect_report_type" type="radio" value="95" title="Sales - Export"><span>Sales - Export</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-47" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-47" name="multiselect_report_type" type="radio" value="47" title="Sales - Menu Item Per Branch Monthly Comparison"><span>Sales - Menu Item Per Branch Monthly Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-35" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-35" name="multiselect_report_type" type="radio" value="35" title="Sales - Menu Item Per Branch Comparison"><span>Sales - Menu Item Per Branch Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-96" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-96" name="multiselect_report_type" type="radio" value="96" title="Sales - Menu Item per Hour Report"><span>Sales - Menu Item per Hour Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-37" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-37" name="multiselect_report_type" type="radio" value="37" title="Sales - Menu Item Per Paytype"><span>Sales - Menu Item Per Paytype</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-90" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-90" name="multiselect_report_type" type="radio" value="90" title="Sales - Theoretical COS"><span>Sales - Theoretical COS</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-26" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-26" name="multiselect_report_type" type="radio" value="26" title="Sales - Top &amp; Bottom Sellers"><span>Sales - Top &amp; Bottom Sellers</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-73" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-73" name="multiselect_report_type" type="radio" value="73" title="Sales - Weekly Sales Report"><span>Sales - Weekly Sales Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-53" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-53" name="multiselect_report_type" type="radio" value="53" title="Staff - Individual User Report"><span>Staff - Individual User Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-24" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-24" name="multiselect_report_type" type="radio" value="24" title="Staff - Log Report"><span>Staff - Log Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-59" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-59" name="multiselect_report_type" type="radio" value="59" title="Staff - Log Report Export"><span>Staff - Log Report Export</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-40" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-40" name="multiselect_report_type" type="radio" value="40" title="Stock - Average Usage Per Hour"><span>Stock - Average Usage Per Hour</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-30" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-30" name="multiselect_report_type" type="radio" value="30" title="Stock - Cost Comparison"><span>Stock - Cost Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-28" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-28" name="multiselect_report_type" type="radio" value="28" title="Stock - Listing Report"><span>Stock - Listing Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-78" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-78" name="multiselect_report_type" type="radio" value="78" title="Stock - Stock Analysis Report"><span>Stock - Stock Analysis Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-75" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-75" name="multiselect_report_type" type="radio" value="75" title="Stock - Stock Movement Report"><span>Stock - Stock Movement Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-29" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-29" name="multiselect_report_type" type="radio" value="29" title="Stock - Usage Report"><span>Stock - Usage Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-14" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-14" name="multiselect_report_type" type="radio" value="14" title="Stock - Value Report"><span>Stock - Value Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-10" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-10" name="multiselect_report_type" type="radio" value="10" title="Stock - Variance Report"><span>Stock - Variance Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-83" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-83" name="multiselect_report_type" type="radio" value="83" title="Stock - Wastage Report"><span>Stock - Wastage Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-32" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-32" name="multiselect_report_type" type="radio" value="32" title="Turnover - Averages Comparison"><span>Turnover - Averages Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-31" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-31" name="multiselect_report_type" type="radio" value="31" title="Turnover - Averages Report"><span>Turnover - Averages Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-43" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-43" name="multiselect_report_type" type="radio" value="43" title="Turnover - Daily Report"><span>Turnover - Daily Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-19" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-19" name="multiselect_report_type" type="radio" value="19" title="Turnover - Hourly Report"><span>Turnover - Hourly Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-20" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-20" name="multiselect_report_type" type="radio" value="20" title="Turnover - Per Branch"><span>Turnover - Per Branch</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-22" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-22" name="multiselect_report_type" type="radio" value="22" title="Turnover - Per Branch Comparison"><span>Turnover - Per Branch Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-25" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-25" name="multiselect_report_type" type="radio" value="25" title="Turnover - Per Branch Monthly Comparison"><span>Turnover - Per Branch Monthly Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-21" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-21" name="multiselect_report_type" type="radio" value="21" title="Turnover - Per Branch Split Paytypes"><span>Turnover - Per Branch Split Paytypes</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-42" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-42" name="multiselect_report_type" type="radio" value="42" title="Turnover - Per Branch Year To Date Comp"><span>Turnover - Per Branch Year To Date Comp</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-1" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-1" name="multiselect_report_type" type="radio" value="1" title="Turnover - Per Day"><span>Turnover - Per Day</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-54" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-54" name="multiselect_report_type" type="radio" value="54" title="Turnover - Per Day Budget Report"><span>Turnover - Per Day Budget Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-49" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-49" name="multiselect_report_type" type="radio" value="49" title="VIP Payroll - Interface Report"><span>VIP Payroll - Interface Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-102" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-102" name="multiselect_report_type" type="radio" value="102" title="Sales - Period Comparison Report"><span>Sales - Period Comparison Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-111" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-111" name="multiselect_report_type" type="radio" value="111" title="Sage X3 Export"><span>Sage X3 Export</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-112" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-112" name="multiselect_report_type" type="radio" value="112" title="Transfers - Departmental Transfers"><span>Transfers - Departmental Transfers</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-116" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-116" name="multiselect_report_type" type="radio" value="116" title="Exception - Error Correct"><span>Exception - Error Correct</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-117" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-117" name="multiselect_report_type" type="radio" value="117" title="Pastel Project Purchases"><span>Pastel Project Purchases</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-119" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-119" name="multiselect_report_type" type="radio" value="119" title="Log Edit(Backend)"><span>Log Edit(Backend)</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-120" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-120" name="multiselect_report_type" type="radio" value="120" title="QuickBooks - Export Report"><span>QuickBooks - Export Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-121" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-121" name="multiselect_report_type" type="radio" value="121" title="Sales - Sales Mode Report"><span>Sales - Sales Mode Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-124" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-124" name="multiselect_report_type" type="radio" value="124" title="Sales - Invoice Count Report"><span>Sales - Invoice Count Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-125" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-125" name="multiselect_report_type" type="radio" value="125" title="Sales - Bump Screen Report"><span>Sales - Bump Screen Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-126" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-126" name="multiselect_report_type" type="radio" value="126" title="Stock - Portioning Yields Export Report"><span>Stock - Portioning Yields Export Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-129" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-129" name="multiselect_report_type" type="radio" value="129" title="Sales - Menu Item Per Branch Daily Comparison"><span>Sales - Menu Item Per Branch Daily Comparison</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-130" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-130" name="multiselect_report_type" type="radio" value="130" title="Stock - Stock Items (without Recipes)"><span>Stock - Stock Items (without Recipes)</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-131" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-131" name="multiselect_report_type" type="radio" value="131" title="Stock - Manufacturing  Report"><span>Stock - Manufacturing  Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-132" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-132" name="multiselect_report_type" type="radio" value="132" title="Stock - Portioning  Report"><span>Stock - Portioning  Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-133" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-133" name="multiselect_report_type" type="radio" value="133" title="Debtors -  Daily Sales Report"><span>Debtors -  Daily Sales Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-134" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-134" name="multiselect_report_type" type="radio" value="134" title="Sales - Item Comparison Report"><span>Sales - Item Comparison Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-135" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-135" name="multiselect_report_type" type="radio" value="135" title="Menu - Pricing levels"><span>Menu - Pricing levels</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-137" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-137" name="multiselect_report_type" type="radio" value="137" title="Staff - Gratuity Report"><span>Staff - Gratuity Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-142" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-142" name="multiselect_report_type" type="radio" value="142" title="Turnover - Analysis Report"><span>Turnover - Analysis Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-145" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-145" name="multiselect_report_type" type="radio" value="145" title="Staff - Full Staff Report"><span>Staff - Full Staff Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-146" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-146" name="multiselect_report_type" type="radio" value="146" title="Customer - Loyalty Report"><span>Customer - Loyalty Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-148" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-148" name="multiselect_report_type" type="radio" value="148" title="Customer - Listing Report"><span>Customer - Listing Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-149" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-149" name="multiselect_report_type" type="radio" value="149" title="Sales - Departmental Sales Per Day Report"><span>Sales - Departmental Sales Per Day Report</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-152" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-152" name="multiselect_report_type" type="radio" value="152" title="Speed of Service"><span>Speed of Service</span></label></li><li class=" "><label for="ui-multiselect-report_type-option-153" title="" class="ui-corner-all"><input id="ui-multiselect-report_type-option-153" name="multiselect_report_type" type="radio" value="153" title="Supplier - GRV per Supplier Export Report "><span>Supplier - GRV per Supplier Export Report </span></label></li></ul><div id="report_type_done" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" style="float: right; font-size: 0.8em; height: 20px; margin-top: 3px;"><span class="ui-button-text">Done</span></div></div><div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all" style="width: 330px;"><div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter"><div class="ui-multiselect-filter">Filter:<input placeholder="Enter keywords" type="search"></div><ul class="ui-helper-reset"><li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>Check all</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>Uncheck all</span></a></li><li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li></ul></div><ul class="ui-multiselect-checkboxes ui-helper-reset"><li class="ui-multiselect-optgroup-label "><a href="#">Eastern Cape</a></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0003B0001" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0003B0001" name="multiselect_Category" type="checkbox" value="C0801R0003B0001" title="Hartenbos"><span>Hartenbos</span></label></li><li class="ui-multiselect-optgroup-label "><a href="#">Gauteng</a></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0011" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0011" name="multiselect_Category" type="checkbox" value="C0801R0001B0011" title="Centurion - Closed"><span>Centurion - Closed</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0007" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0007" name="multiselect_Category" type="checkbox" value="C0801R0001B0007" title="Eagles Landing"><span>Eagles Landing</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0004" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0004" name="multiselect_Category" type="checkbox" value="C0801R0001B0004" title="Irene Village"><span>Irene Village</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0001" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0001" name="multiselect_Category" type="checkbox" value="C0801R0001B0001" title="Kyalami -Closed"><span>Kyalami -Closed</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0006" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0006" name="multiselect_Category" type="checkbox" value="C0801R0001B0006" title="Lynnridge Mall"><span>Lynnridge Mall</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0008" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0008" name="multiselect_Category" type="checkbox" value="C0801R0001B0008" title="Melrose Arch"><span>Melrose Arch</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0005" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0005" name="multiselect_Category" type="checkbox" value="C0801R0001B0005" title="Melville @ Bibloteek"><span>Melville @ Bibloteek</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0009" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0009" name="multiselect_Category" type="checkbox" value="C0801R0001B0009" title="Paulshof - Closed"><span>Paulshof - Closed</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0012" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0012" name="multiselect_Category" type="checkbox" value="C0801R0001B0012" title="Piza E Vino Cambridge Crossing (Ex Paulshof)"><span>Piza E Vino Cambridge Crossing (Ex Paulshof)</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0010" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0010" name="multiselect_Category" type="checkbox" value="C0801R0001B0010" title="Queenswood"><span>Queenswood</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0002" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0002" name="multiselect_Category" type="checkbox" value="C0801R0001B0002" title="Rosebank - Closed"><span>Rosebank - Closed</span></label></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0001B0003" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0001B0003" name="multiselect_Category" type="checkbox" value="C0801R0001B0003" title="Waterkloof Corner"><span>Waterkloof Corner</span></label></li><li class="ui-multiselect-optgroup-label "><a href="#">Head Office</a></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0999B0001" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0999B0001" name="multiselect_Category" type="checkbox" value="C0801R0999B0001" title="Test Branch"><span>Test Branch</span></label></li><li class="ui-multiselect-optgroup-label "><a href="#">Western Cape</a></li><li class=" "><label for="ui-multiselect-Category-option-C0801R0002B0001" title="" class="ui-corner-all"><input id="ui-multiselect-Category-option-C0801R0002B0001" name="multiselect_Category" type="checkbox" value="C0801R0002B0001" title="Stellenbosch Square"><span>Stellenbosch Square</span></label></li></ul><div id="Category_done" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" value=">>" name="Submit" style="float: right; font-size: 0.8em; height: 22px; margin-top: 3px;">Add</div><div id="Category_replace" onclick="javascript:replace_stores()" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" style="float: right; font-size: 0.8em; margin-top: 3px;"><span class="ui-button-text">Replace</span></div></div><div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all" style="width: 330px;"><div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter"><div class="ui-multiselect-filter">Filter:<input placeholder="Enter keywords" type="search"></div><ul class="ui-helper-reset"><li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>Check all</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>Uncheck all</span></a></li><li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li></ul></div><ul class="ui-multiselect-checkboxes ui-helper-reset"><li class=" "><label for="ui-multiselect-stores-option-C0801R0003B0001" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0003B0001" name="multiselect_stores" type="checkbox" value="C0801R0003B0001" title="Hartenbos"><span>Hartenbos</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0011" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0011" name="multiselect_stores" type="checkbox" value="C0801R0001B0011" title="Centurion - Closed"><span>Centurion - Closed</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0007" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0007" name="multiselect_stores" type="checkbox" value="C0801R0001B0007" title="Eagles Landing"><span>Eagles Landing</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0004" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0004" name="multiselect_stores" type="checkbox" value="C0801R0001B0004" title="Irene Village"><span>Irene Village</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0001" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0001" name="multiselect_stores" type="checkbox" value="C0801R0001B0001" title="Kyalami -Closed"><span>Kyalami -Closed</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0006" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0006" name="multiselect_stores" type="checkbox" value="C0801R0001B0006" title="Lynnridge Mall"><span>Lynnridge Mall</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0008" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0008" name="multiselect_stores" type="checkbox" value="C0801R0001B0008" title="Melrose Arch"><span>Melrose Arch</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0005" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0005" name="multiselect_stores" type="checkbox" value="C0801R0001B0005" title="Melville @ Bibloteek"><span>Melville @ Bibloteek</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0009" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0009" name="multiselect_stores" type="checkbox" value="C0801R0001B0009" title="Paulshof - Closed"><span>Paulshof - Closed</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0012" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0012" name="multiselect_stores" type="checkbox" value="C0801R0001B0012" title="Piza E Vino Cambridge Crossing (Ex Paulshof)"><span>Piza E Vino Cambridge Crossing (Ex Paulshof)</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0010" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0010" name="multiselect_stores" type="checkbox" value="C0801R0001B0010" title="Queenswood"><span>Queenswood</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0002" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0002" name="multiselect_stores" type="checkbox" value="C0801R0001B0002" title="Rosebank - Closed"><span>Rosebank - Closed</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0001B0003" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0001B0003" name="multiselect_stores" type="checkbox" value="C0801R0001B0003" title="Waterkloof Corner"><span>Waterkloof Corner</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0999B0001" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0999B0001" name="multiselect_stores" type="checkbox" value="C0801R0999B0001" title="Test Branch"><span>Test Branch</span></label></li><li class=" "><label for="ui-multiselect-stores-option-C0801R0002B0001" title="" class="ui-corner-all"><input id="ui-multiselect-stores-option-C0801R0002B0001" name="multiselect_stores" type="checkbox" value="C0801R0002B0001" title="Stellenbosch Square"><span>Stellenbosch Square</span></label></li></ul><div id="stores_done" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" value="<<" name="Submit" style="float: right; font-size: 0.8em; height: 20px; margin-top: 3px;">Remove</div></div><div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all ui-multiselect-single" style="width: 120px;"><div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix ui-multiselect-hasfilter" style="display: none;"><div class="ui-multiselect-filter">Filter:<input placeholder="Enter keywords" type="search"></div><ul class="ui-helper-reset"><li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li></ul></div><ul class="ui-multiselect-checkboxes ui-helper-reset"><li class=" "><label for="ui-multiselect-month_selects-option-01" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-01" name="multiselect_month_selects" type="radio" value="01" title="January"><span>January</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-02" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-02" name="multiselect_month_selects" type="radio" value="02" title="February"><span>February</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-03" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-03" name="multiselect_month_selects" type="radio" value="03" title="March"><span>March</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-04" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-04" name="multiselect_month_selects" type="radio" value="04" title="April"><span>April</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-05" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-05" name="multiselect_month_selects" type="radio" value="05" title="May"><span>May</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-06" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-06" name="multiselect_month_selects" type="radio" value="06" title="June"><span>June</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-07" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-07" name="multiselect_month_selects" type="radio" value="07" title="July"><span>July</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-08" title="" class="ui-corner-all"><input id="ui-multiselect-month_selects-option-08" name="multiselect_month_selects" type="radio" value="08" title="August"><span>August</span></label></li><li class=" "><label for="ui-multiselect-month_selects-option-09" title="" class="ui-corner-all ui-state-active"><input id="ui-multiselect-month_selects-option-09" name="multiselect_month_selects" type="radio" value="09" title="September" checked="checked" aria-selected="true"><span>September</span></label></li><li class="ui-multiselect-disabled "><label for="ui-multiselect-month_selects-option-10" title="" class="ui-corner-all ui-state-disabled"><input id="ui-multiselect-month_selects-option-10" name="multiselect_month_selects" type="radio" value="10" title="October" disabled="disabled" aria-disabled="true"><span>October</span></label></li><li class="ui-multiselect-disabled "><label for="ui-multiselect-month_selects-option-11" title="" class="ui-corner-all ui-state-disabled"><input id="ui-multiselect-month_selects-option-11" name="multiselect_month_selects" type="radio" value="11" title="November" disabled="disabled" aria-disabled="true"><span>November</span></label></li><li class="ui-multiselect-disabled "><label for="ui-multiselect-month_selects-option-12" title="" class="ui-corner-all ui-state-disabled"><input id="ui-multiselect-month_selects-option-12" name="multiselect_month_selects" type="radio" value="12" title="December" disabled="disabled" aria-disabled="true"><span>December</span></label></li></ul><div id="month_selects_done" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only dbutton ui-state-active" role="button" aria-disabled="false" style="float: right; font-size: 0.8em; height: 20px; margin-top: 3px;"><span class="ui-button-text">Done</span></div></div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
